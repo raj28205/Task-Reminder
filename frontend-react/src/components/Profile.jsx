@@ -15,6 +15,10 @@ export default function ProfileView({
   const [profileName, setProfileName] = useState(user.name || "");
   const [profileEmail, setProfileEmail] = useState(user.email || "");
   const [profilePhone, setProfilePhone] = useState(user.phone || "");
+  
+  const [prefBrowser, setPrefBrowser] = useState(user.pref_browser ?? true);
+  const [prefSms, setPrefSms] = useState(user.pref_sms ?? true);
+  const [prefEmail, setPrefEmail] = useState(user.pref_email ?? true);
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -103,7 +107,7 @@ export default function ProfileView({
     setSuccess("");
     setLoading(true);
     try {
-      const result = await api.updateProfile(profileName, profileEmail, profilePhone);
+      const result = await api.updateProfile(profileName, profileEmail, profilePhone, prefBrowser, prefSms, prefEmail);
       localStorage.setItem("user", JSON.stringify(result.user));
       setUser(result.user);
       setSuccess("Profile settings updated successfully!");
@@ -197,6 +201,39 @@ export default function ProfileView({
               value={profilePhone} 
               onChange={(e) => setProfilePhone(e.target.value)} 
             />
+          </div>
+
+          <div className="form-group">
+            <label>Notification Preferences</label>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", marginTop: "0.5rem" }}>
+              <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontWeight: "normal", fontSize: "0.9rem" }}>
+                <input 
+                  type="checkbox" 
+                  checked={prefBrowser} 
+                  onChange={(e) => setPrefBrowser(e.target.checked)} 
+                  style={{ width: "auto", margin: 0 }}
+                />
+                Browser notification
+              </label>
+              <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontWeight: "normal", fontSize: "0.9rem" }}>
+                <input 
+                  type="checkbox" 
+                  checked={prefSms} 
+                  onChange={(e) => setPrefSms(e.target.checked)} 
+                  style={{ width: "auto", margin: 0 }}
+                />
+                SMS
+              </label>
+              <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontWeight: "normal", fontSize: "0.9rem" }}>
+                <input 
+                  type="checkbox" 
+                  checked={prefEmail} 
+                  onChange={(e) => setPrefEmail(e.target.checked)} 
+                  style={{ width: "auto", margin: 0 }}
+                />
+                Email
+              </label>
+            </div>
           </div>
 
           <button type="submit" className="primary-btn" disabled={loading}>

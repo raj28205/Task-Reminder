@@ -8,9 +8,17 @@ try {
     try {
         $pdo->exec("ALTER TABLE users ADD COLUMN otp_code VARCHAR(6) DEFAULT NULL");
         $pdo->exec("ALTER TABLE users ADD COLUMN otp_expiry DATETIME DEFAULT NULL");
-    } catch (PDOException $ex) {
-        // Ignore if created concurrently
-    }
+    } catch (PDOException $ex) {}
+}
+
+try {
+    $pdo->query("SELECT pref_browser FROM users LIMIT 1");
+} catch (PDOException $e) {
+    try {
+        $pdo->exec("ALTER TABLE users ADD COLUMN pref_browser BOOLEAN DEFAULT TRUE");
+        $pdo->exec("ALTER TABLE users ADD COLUMN pref_sms BOOLEAN DEFAULT TRUE");
+        $pdo->exec("ALTER TABLE users ADD COLUMN pref_email BOOLEAN DEFAULT TRUE");
+    } catch (PDOException $ex) {}
 }
 
 function send_sms($phone, $otp_code) {
@@ -28,6 +36,9 @@ if (($method === 'PUT') || ($method === 'POST' && $action === 'update_profile'))
     $name = trim($body['name'] ?? '');
     $email = trim($body['email'] ?? '');
     $phone = trim($body['phone'] ?? '');
+    $pref_browser = isset($body['pref_browser']) ? (int)(bool)$body['pref_browser'] : 1;
+    $pref_sms = isset($body['pref_sms']) ? (int)(bool)$body['pref_sms'] : 1;
+    $pref_email = isset($body['pref_email']) ? (int)(bool)$body['pref_email'] : 1;
 
     if (!$name || !$email) {
         http_response_code(400);
@@ -36,11 +47,19 @@ if (($method === 'PUT') || ($method === 'POST' && $action === 'update_profile'))
     }
 
     try {
-        $stmt = $pdo->prepare("UPDATE users SET name = ?, email = ?, phone = ? WHERE id = ?");
-        $stmt->execute([$name, $email, $phone, $user['id']]);
+        $stmt = $pdo->prepare("UPDATE users SET name = ?, email = ?, phone = ?, pref_browser = ?, pref_sms = ?, pref_email = ? WHERE id = ?");
+        $stmt->execute([$name, $email, $phone, $pref_browser, $pref_sms, $pref_email, $user['id']]);
         echo json_encode([
             "success" => true,
-            "user" => ["id" => $user['id'], "name" => $name, "email" => $email, "phone" => $phone]
+            "user" => [
+                "id" => $user['id'], 
+                "name" => $name, 
+                "email" => $email, 
+                "phone" => $phone,
+                "pref_browser" => (bool)$pref_browser,
+                "pref_sms" => (bool)$pref_sms,
+                "pref_email" => (bool)$pref_email
+            ]
         ]);
     } catch (PDOException $e) {
         http_response_code(409);
@@ -95,7 +114,15 @@ if ($method === 'POST' && $action === 'login') {
     echo json_encode([
         "success" => true,
         "token" => $token,
-        "user" => ["id" => $user['id'], "name" => $user['name'], "email" => $user['email'], "phone" => $user['phone']],
+        "user" => [
+            "id" => $user['id'], 
+            "name" => $user['name'], 
+            "email" => $user['email'], 
+            "phone" => $user['phone'],
+            "pref_browser" => (bool)($user['pref_browser'] ?? true),
+            "pref_sms" => (bool)($user['pref_sms'] ?? true),
+            "pref_email" => (bool)($user['pref_email'] ?? true)
+        ],
     ]);
     exit();
 }

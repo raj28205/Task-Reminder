@@ -332,17 +332,20 @@ export default function SettingsView({
             </div>
 
             {createMode === 'address' && (
-              <form onSubmit={handleSearchCreate} style={{ display: 'flex', gap: '5px', marginBottom: '15px' }}>
-                <input 
-                  type="text" 
-                  placeholder="Type an address..." 
-                  value={createAddressInput}
-                  onChange={(e) => setCreateAddressInput(e.target.value)}
-                  style={{ flex: 1, padding: '0.5rem' }}
-                />
-                <button type="submit" disabled={isSearchingCreate} className="primary-btn">
-                  {isSearchingCreate ? 'Searching...' : 'Search'}
-                </button>
+              <form onSubmit={handleSearchCreate} className="form-group" style={{ marginBottom: '15px' }}>
+                <label>Address Search</label>
+                <div style={{ display: 'flex', gap: '5px' }}>
+                  <input 
+                    type="text" 
+                    placeholder="Type an address..." 
+                    value={createAddressInput}
+                    onChange={(e) => setCreateAddressInput(e.target.value)}
+                    style={{ flex: 1 }}
+                  />
+                  <button type="submit" disabled={isSearchingCreate} className="primary-btn">
+                    {isSearchingCreate ? 'Searching...' : 'Search'}
+                  </button>
+                </div>
               </form>
             )}
 
@@ -392,7 +395,7 @@ export default function SettingsView({
                 />
               </div>
 
-              <button type="submit" className="primary-btn">Save Geofence</button>
+              <button type="submit" className="primary-btn" style={{ marginTop: '15px' }}>Save</button>
             </form>
           </div>
         )}

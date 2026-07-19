@@ -30,11 +30,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 // Reads from environment variables (set these in Render → Environment tab).
 // Falls back to local XAMPP defaults only if the env vars aren't set, so
 // this file still works unchanged on your local machine.
-$DB_HOST = getenv('DB_HOST') ?: 'localhost';
-$DB_PORT = getenv('DB_PORT') ?: 3306;
-$DB_NAME = getenv('DB_NAME') ?: 'geofence_app';
-$DB_USER = getenv('DB_USER') ?: 'root';
-$DB_PASS = getenv('DB_PASS') ?: '';
+$isLocalhost = in_array($_SERVER['SERVER_NAME'] ?? '', ['localhost', '127.0.0.1', '::1']);
+
+$DB_HOST = $isLocalhost ? 'localhost' : (getenv('DB_HOST') ?: 'localhost');
+$DB_PORT = $isLocalhost ? 3306 : (getenv('DB_PORT') ?: 3306);
+$DB_NAME = $isLocalhost ? 'geofence_app' : (getenv('DB_NAME') ?: 'geofence_app');
+$DB_USER = $isLocalhost ? 'root' : (getenv('DB_USER') ?: 'root');
+$DB_PASS = $isLocalhost ? '' : (getenv('DB_PASS') ?: '');
 $DB_SSL_CA = __DIR__ . "/ca.pem";
 
 try {

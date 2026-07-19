@@ -75,6 +75,10 @@ def notify_enter_event(cursor, user: dict, event: dict):
 
     def _do_email():
         print(">>> NOTIFY DEBUG: _do_email started.")
+        if not int(user.get("pref_email", 1)):
+            print(">>> NOTIFY DEBUG: User opted out of Email.")
+            return None
+
         if user.get("email"):
             try:
                 print(f">>> NOTIFY DEBUG: Calling send_email for {user['email']}")
@@ -91,6 +95,10 @@ def notify_enter_event(cursor, user: dict, event: dict):
 
     def _do_sms():
         print(">>> NOTIFY DEBUG: _do_sms started.")
+        if not int(user.get("pref_sms", 1)):
+            print(">>> NOTIFY DEBUG: User opted out of SMS.")
+            return None
+
         phone = user.get("phone")
         if phone:
             # Twilio requires E.164 format (must include country code).
@@ -115,6 +123,10 @@ def notify_enter_event(cursor, user: dict, event: dict):
 
     def _do_push():
         print(">>> NOTIFY DEBUG: _do_push started.")
+        if not int(user.get("pref_browser", 1)):
+            print(">>> NOTIFY DEBUG: User opted out of Push Notifications.")
+            return None
+
         try:
             print(f">>> NOTIFY DEBUG: Calling send_push_notification for user_id={user['id']}")
             if send_push_notification(user["id"], push_title, push_body):

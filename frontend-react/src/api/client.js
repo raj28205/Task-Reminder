@@ -1,6 +1,13 @@
-// Two base URLs: PHP (XAMPP) for CRUD, Python (Flask) for live location.
-const PHP_BASE = "https://task-reminder-sqv6.onrender.com";
-const PYTHON_BASE = "https://task-reminder-python.onrender.com";
+// Automatically detect if we are running locally or in production
+const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+
+const PHP_BASE = isLocal 
+  ? "http://localhost/geofence_api" // Local XAMPP path
+  : "https://task-reminder-sqv6.onrender.com";
+
+const PYTHON_BASE = isLocal 
+  ? "http://localhost:5000" // Local Flask port
+  : "https://task-reminder-python.onrender.com";
 function authHeaders() {
   const token = localStorage.getItem("token");
   return token ? { Authorization: `Bearer ${token}` } : {};
@@ -47,10 +54,10 @@ export const api = {
     }),
 
   // --- Auth (PHP) Update Profile ---
-  updateProfile: (name, email, phone) =>
+  updateProfile: (name, email, phone, pref_browser, pref_sms, pref_email) =>
     request(PHP_BASE, "/auth.php?action=update_profile", {
       method: "POST",
-      body: JSON.stringify({ name, email, phone }),
+      body: JSON.stringify({ name, email, phone, pref_browser, pref_sms, pref_email }),
     }),
 
   // --- Geofences (PHP) ---

@@ -36,6 +36,15 @@ input, button, select, textarea {
   appearance: none;
 }
 
+/* Restore native appearance for checkboxes so the tick mark is visible */
+input[type="checkbox"] {
+  -webkit-appearance: auto;
+  -moz-appearance: auto;
+  appearance: auto;
+  accent-color: var(--accent-blue);
+  cursor: pointer;
+}
+
 body {
   background: radial-gradient(circle at 100% 0%, rgba(99, 102, 241, 0.05), transparent 40%),
               radial-gradient(circle at 0% 100%, rgba(16, 185, 129, 0.03), transparent 45%),
