@@ -1,5 +1,5 @@
 <?php
-require_once 'auth.php';
+require_once 'config.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 if ($method !== 'POST') {
@@ -23,4 +23,3 @@ $stmt = $pdo->prepare('UPDATE users SET device_token = ? WHERE id = ?');
 $stmt->execute([$deviceToken, $user['id']]);
 
 echo json_encode(['success' => true]);
-?>
