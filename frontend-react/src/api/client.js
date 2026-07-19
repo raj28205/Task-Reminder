@@ -1,6 +1,5 @@
 // Two base URLs: PHP (XAMPP) for CRUD, Python (Flask) for live location.
 const PYTHON_BASE = "https://task-reminder-python.onrender.com";
-const PYTHON_BASE = "http://localhost:5000";
 function authHeaders() {
   const token = localStorage.getItem("token");
   return token ? { Authorization: `Bearer ${token}` } : {};
