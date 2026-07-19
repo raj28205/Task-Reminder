@@ -1,0 +1,29 @@
+# React
+frontend-react/node_modules/
+frontend-react/dist/
+
+# Python
+backend-python/venv/
+backend-python/__pycache__/
+backend-python/*.pyc
+
+# Environment files
+.env
+.env.*
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Firebase service account (keep private)
+backend-python/firebase-service-account.json
+
+# Python cache
+**/__pycache__/

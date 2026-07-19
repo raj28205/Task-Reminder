@@ -1,0 +1,7 @@
+flask
+flask-cors
+mysql-connector-python
+twilio
+requests
+python-dotenv
+google-auth
