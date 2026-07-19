@@ -2,6 +2,25 @@
 // config.php — shared DB connection + CORS setup.
 // Place this whole backend-php folder in: C:/xampp/htdocs/geofence_api
 
+// --- Centralized Error Logging Setup ---
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+ini_set('error_log', __DIR__ . '/backend_errors.log');
+error_reporting(E_ALL);
+
+set_exception_handler(function($e) {
+    error_log("Uncaught Exception: " . $e->getMessage() . " in " . $e->getFile() . " on line " . $e->getLine());
+    http_response_code(500);
+    echo json_encode(["error" => "Internal Server Error"]);
+    exit();
+});
+
+set_error_handler(function($level, $message, $file, $line) {
+    if (error_reporting() !== 0) { 
+        throw new ErrorException($message, 0, $level, $file, $line);
+    }
+});
+
 // --- CORS: allow the React dev server to call this API ---
 $origin = $_SERVER['HTTP_ORIGIN'] ?? 'http://localhost:5173';
 if ($origin === 'http://localhost:5173' || $origin === 'http://localhost:5174') {
